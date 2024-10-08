@@ -1,0 +1,59 @@
+package com.ggarabetti.devjobs_crud.controllers;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ggarabetti.devjobs_crud.domain.job.Job;
+import com.ggarabetti.devjobs_crud.domain.job.JobRequestDTO;
+import com.ggarabetti.devjobs_crud.services.JobService;
+
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/jobs")
+public class JobController {
+
+    @Autowired
+    private JobService jobService;
+
+    @GetMapping
+    public ResponseEntity getAllJobs() {
+        List<Job> allJobs = jobService.getAllJobs();
+        return ResponseEntity.ok(allJobs);
+    }
+
+    @PostMapping
+    public ResponseEntity registerJob(@RequestBody @Valid JobRequestDTO data) {
+        Job job = jobService.registerJob(data);
+        return ResponseEntity.status(HttpStatus.CREATED).body(job);
+    }
+
+    @PutMapping()
+    @Transactional
+    public ResponseEntity updateJob(@RequestBody @Valid JobRequestDTO data) {
+        var updatedJob = jobService.updateJob(data);
+        return ResponseEntity.ok(updatedJob);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity removeJob(@PathVariable UUID id) {
+        System.out.println(id);
+        var removedJob = jobService.removeJob(id);
+        return ResponseEntity.ok(removedJob);
+    }
+
+}
