@@ -40,6 +40,7 @@ public class JobService {
             oldJob.setCountry(data.country());
             oldJob.setJobDescription(data.jobDescription());
             oldJob.setGeneralRequirements(data.generalRequirements());
+            oldJob.setGeneralAssignments(data.generalAssignments());
 
             return oldJob;
         }

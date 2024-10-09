@@ -1,6 +1,9 @@
 package com.ggarabetti.devjobs_crud.domain.job;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,6 +46,13 @@ public class Job {
     @Column(name = "general_requirements")
     private String generalRequirements;
 
+    @Column(name = "general_assignments")
+    private String generalAssignments;
+
+    @CreationTimestamp
+    @Column(name = "creation_date")
+    private LocalDateTime creationDate;
+
     public Job(JobRequestDTO requestJob) {
         this.imagePath = requestJob.imagePath();
         this.mode = requestJob.mode();
@@ -51,5 +61,6 @@ public class Job {
         this.country = requestJob.country();
         this.jobDescription = requestJob.jobDescription();
         this.generalRequirements = requestJob.generalRequirements();
+        this.generalAssignments = requestJob.generalAssignments();
     }
 }
