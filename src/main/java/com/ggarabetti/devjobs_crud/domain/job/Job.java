@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ggarabetti.devjobs_crud.domain.company.Company;
@@ -49,6 +50,7 @@ public class Job {
     @NotNull
     private String country;
 
+    @JsonBackReference
     @ManyToOne()
     @JoinColumn(name = "company_id")
     private Company company;

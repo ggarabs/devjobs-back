@@ -3,12 +3,16 @@ package com.ggarabetti.devjobs_crud.domain.company;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ggarabetti.devjobs_crud.domain.job.Job;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -40,11 +44,16 @@ public class Company {
     @Column(name = "large_image_path")
     private String largeImagePath;
 
-    public Company(CompanyRequestDTO data) {
+    @JsonManagedReference
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Job> jobVacancies;
+
+    public Company(CompanyRequestDTO data, List<Job> vacancies) {
         this.name = data.name();
         this.website = data.website();
         this.imagePath = data.imagePath();
         this.largeImagePath = data.largeImagePath();
+        this.jobVacancies = vacancies;
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.ggarabetti.devjobs_crud.domain.company.Company;
 import com.ggarabetti.devjobs_crud.domain.company.CompanyRepository;
 import com.ggarabetti.devjobs_crud.domain.company.CompanyRequestDTO;
+import com.ggarabetti.devjobs_crud.domain.job.Job;
 
 @Service
 public class CompanyService {
@@ -20,7 +21,8 @@ public class CompanyService {
     }
 
     public Company registerCompany(CompanyRequestDTO company) {
-        Company newCompany = new Company(company);
+        List<Job> vacancies = new ArrayList<>();
+        Company newCompany = new Company(company, vacancies);
         return repository.save(newCompany);
     }
 
