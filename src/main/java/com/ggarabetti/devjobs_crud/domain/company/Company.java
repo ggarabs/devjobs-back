@@ -26,7 +26,7 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "company_name")
+    @Column(name = "company_name", nullable = false)
     private String name;
 
     private String website;

@@ -29,16 +29,14 @@ public class Job {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "image_path")
-    private String imagePath;
-
     private String mode;
 
     private String title;
 
-    private String company;
-
     private String country;
+
+    @Column(name = "company_id", nullable = false)
+    private UUID company;
 
     @Column(name = "job_description")
     private String jobDescription;
@@ -54,13 +52,12 @@ public class Job {
     private LocalDateTime creationDate;
 
     public Job(JobRequestDTO requestJob) {
-        this.imagePath = requestJob.imagePath();
         this.mode = requestJob.mode();
         this.title = requestJob.title();
-        this.company = requestJob.company();
         this.country = requestJob.country();
         this.jobDescription = requestJob.jobDescription();
         this.generalRequirements = requestJob.generalRequirements();
         this.generalAssignments = requestJob.generalAssignments();
+        this.company = requestJob.companyId();
     }
 }

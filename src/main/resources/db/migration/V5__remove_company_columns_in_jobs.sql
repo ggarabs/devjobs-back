@@ -1,0 +1,14 @@
+ALTER TABLE job
+DROP COLUMN image_path;
+
+ALTER TABLE job
+DROP COLUMN company;
+
+ALTER TABLE job
+ADD company_id UUID NOT NULL;
+
+ALTER TABLE job
+ADD CONSTRAINT fk_company
+FOREIGN KEY (company_id)
+REFERENCES companies(id)
+ON DELETE CASCADE;

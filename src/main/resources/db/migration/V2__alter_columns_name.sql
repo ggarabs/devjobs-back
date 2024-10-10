@@ -1,8 +1,8 @@
 ALTER TABLE job
-RENAME COLUMN imagepath to image_path;
+RENAME COLUMN imagePath to image_path;
 
 ALTER TABLE job
-RENAME COLUMN jobdescription to job_description;
+RENAME COLUMN jobDescription to job_description;
 
 ALTER TABLE job
-RENAME COLUMN generalrequirements to general_requirements;
+RENAME COLUMN generalRequirements to general_requirements;

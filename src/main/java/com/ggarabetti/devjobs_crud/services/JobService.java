@@ -17,30 +17,29 @@ import jakarta.persistence.EntityNotFoundException;
 public class JobService {
 
     @Autowired
-    private JobRepository repository;
+    private JobRepository jobRepository;
 
     public List<Job> getAllJobs() {
-        return repository.findAll();
+        return jobRepository.findAll();
     }
 
     public Job registerJob(JobRequestDTO job) {
         Job newJob = new Job(job);
-        return repository.save(newJob);
+        return jobRepository.save(newJob);
     }
 
     public Job updateJob(JobRequestDTO data) {
-        Optional<Job> job = repository.findById(data.id());
+        Optional<Job> job = jobRepository.findById(data.id());
         if (job.isPresent()) {
             Job oldJob = job.get();
 
-            oldJob.setImagePath(data.imagePath());
             oldJob.setMode(data.mode());
             oldJob.setTitle(data.title());
-            oldJob.setCompany(data.company());
             oldJob.setCountry(data.country());
             oldJob.setJobDescription(data.jobDescription());
             oldJob.setGeneralRequirements(data.generalRequirements());
             oldJob.setGeneralAssignments(data.generalAssignments());
+            oldJob.setCompany(data.companyId());
 
             return oldJob;
         }
@@ -48,10 +47,10 @@ public class JobService {
     }
 
     public Job removeJob(UUID id) {
-        Optional<Job> OptionalJob = repository.findById(id);
+        Optional<Job> OptionalJob = jobRepository.findById(id);
         if (OptionalJob.isPresent()) {
             Job job = OptionalJob.get();
-            repository.delete(job);
+            jobRepository.delete(job);
             return job;
         }
         throw new EntityNotFoundException();
