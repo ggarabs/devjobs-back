@@ -1,13 +1,16 @@
 package com.ggarabetti.devjobs_crud.domain.job;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ggarabetti.devjobs_crud.domain.company.Company;
+import com.ggarabetti.devjobs_crud.domain.requirements.Requirement;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -49,6 +53,10 @@ public class Job {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Requirement> requirements;
+
     @Column(name = "job_description")
     private String jobDescription;
 
@@ -62,7 +70,7 @@ public class Job {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
-    public Job(JobRequestDTO requestJob, Company company) {
+    public Job(JobRequestDTO requestJob, Company company, List<Requirement> requirements) {
         this.mode = requestJob.mode();
         this.title = requestJob.title();
         this.country = requestJob.country();
@@ -70,5 +78,6 @@ public class Job {
         this.generalRequirements = requestJob.generalRequirements();
         this.generalAssignments = requestJob.generalAssignments();
         this.company = company;
+        this.requirements = requirements;
     }
 }

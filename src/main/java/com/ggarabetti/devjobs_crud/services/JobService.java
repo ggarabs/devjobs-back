@@ -12,6 +12,8 @@ import com.ggarabetti.devjobs_crud.domain.company.CompanyRepository;
 import com.ggarabetti.devjobs_crud.domain.job.Job;
 import com.ggarabetti.devjobs_crud.domain.job.JobRepository;
 import com.ggarabetti.devjobs_crud.domain.job.JobRequestDTO;
+import com.ggarabetti.devjobs_crud.domain.requirements.Requirement;
+import com.ggarabetti.devjobs_crud.domain.requirements.RequirementRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -24,15 +26,20 @@ public class JobService {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Autowired
+    private RequirementRepository requirementRepository;
+
     public List<Job> getAllJobs() {
         return jobRepository.findAll();
     }
 
     public Job registerJob(JobRequestDTO job) {
-        Optional<Company> OptionalCompany = companyRepository.findById(job.companyId());
-        if (OptionalCompany.isPresent()) {
-            Company company = OptionalCompany.get();
-            Job newJob = new Job(job, company);
+        Optional<Company> optionalCompany = companyRepository.findById(job.companyId());
+        Optional<List<Requirement>> optionalRequirements = requirementRepository.findAllById(job.id());
+        if (optionalCompany.isPresent() && optionalRequirements.isPresent()) {
+            Company company = optionalCompany.get();
+            List<Requirement> requirements = optionalRequirements.get();
+            Job newJob = new Job(job, company, requirements);
             return jobRepository.save(newJob);
         }
         throw new EntityNotFoundException();

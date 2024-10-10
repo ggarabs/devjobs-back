@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,14 +24,12 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping
     public ResponseEntity getAllCompanies() {
         List<Company> allCompanies = companyService.getAllCompanies();
         return ResponseEntity.ok(allCompanies);
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     public ResponseEntity registerCompany(@RequestBody @Valid CompanyRequestDTO data) {
         Company company = companyService.registerCompany(data);
