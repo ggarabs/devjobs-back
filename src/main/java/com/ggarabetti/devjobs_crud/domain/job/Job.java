@@ -5,12 +5,18 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ggarabetti.devjobs_crud.domain.company.Company;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,16 +33,21 @@ import lombok.Setter;
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JsonIgnore
     private UUID id;
 
+    @NotNull
     private String mode;
 
+    @NotNull
     private String title;
 
+    @NotNull
     private String country;
 
-    @Column(name = "company_id", nullable = false)
-    private UUID company;
+    @ManyToOne()
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @Column(name = "job_description")
     private String jobDescription;
@@ -51,13 +62,13 @@ public class Job {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
-    public Job(JobRequestDTO requestJob) {
+    public Job(JobRequestDTO requestJob, Company company) {
         this.mode = requestJob.mode();
         this.title = requestJob.title();
         this.country = requestJob.country();
         this.jobDescription = requestJob.jobDescription();
         this.generalRequirements = requestJob.generalRequirements();
         this.generalAssignments = requestJob.generalAssignments();
-        this.company = requestJob.companyId();
+        this.company = company;
     }
 }

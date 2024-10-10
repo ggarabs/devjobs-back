@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ggarabetti.devjobs_crud.domain.company.Company;
+import com.ggarabetti.devjobs_crud.domain.company.CompanyRepository;
 import com.ggarabetti.devjobs_crud.domain.job.Job;
 import com.ggarabetti.devjobs_crud.domain.job.JobRepository;
 import com.ggarabetti.devjobs_crud.domain.job.JobRequestDTO;
@@ -19,29 +21,39 @@ public class JobService {
     @Autowired
     private JobRepository jobRepository;
 
+    @Autowired
+    private CompanyRepository companyRepository;
+
     public List<Job> getAllJobs() {
         return jobRepository.findAll();
     }
 
     public Job registerJob(JobRequestDTO job) {
-        Job newJob = new Job(job);
-        return jobRepository.save(newJob);
+        Optional<Company> OptionalCompany = companyRepository.findById(job.companyId());
+        if (OptionalCompany.isPresent()) {
+            Company company = OptionalCompany.get();
+            Job newJob = new Job(job, company);
+            return jobRepository.save(newJob);
+        }
+        throw new EntityNotFoundException();
     }
 
     public Job updateJob(JobRequestDTO data) {
-        Optional<Job> job = jobRepository.findById(data.id());
-        if (job.isPresent()) {
-            Job oldJob = job.get();
+        Optional<Job> optionalJob = jobRepository.findById(data.id());
+        Optional<Company> optionalCompany = companyRepository.findById(data.companyId());
+        if (optionalJob.isPresent() && optionalCompany.isPresent()) {
+            Job newJob = optionalJob.get();
+            Company newCompany = optionalCompany.get();
 
-            oldJob.setMode(data.mode());
-            oldJob.setTitle(data.title());
-            oldJob.setCountry(data.country());
-            oldJob.setJobDescription(data.jobDescription());
-            oldJob.setGeneralRequirements(data.generalRequirements());
-            oldJob.setGeneralAssignments(data.generalAssignments());
-            oldJob.setCompany(data.companyId());
+            newJob.setMode(data.mode());
+            newJob.setTitle(data.title());
+            newJob.setCountry(data.country());
+            newJob.setJobDescription(data.jobDescription());
+            newJob.setGeneralRequirements(data.generalRequirements());
+            newJob.setGeneralAssignments(data.generalAssignments());
+            newJob.setCompany(newCompany);
 
-            return oldJob;
+            return newJob;
         }
         throw new EntityNotFoundException();
     }

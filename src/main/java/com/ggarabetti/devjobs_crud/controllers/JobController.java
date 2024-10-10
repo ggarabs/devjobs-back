@@ -55,7 +55,6 @@ public class JobController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity removeJob(@PathVariable UUID id) {
-        System.out.println(id);
         var removedJob = jobService.removeJob(id);
         return ResponseEntity.ok(removedJob);
     }
