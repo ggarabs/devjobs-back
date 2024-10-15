@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ggarabetti.devjobs_crud.domain.assignment.Assignment;
 import com.ggarabetti.devjobs_crud.domain.company.Company;
 import com.ggarabetti.devjobs_crud.domain.requirements.Requirement;
 
@@ -50,7 +51,6 @@ public class Job {
     @NotNull
     private String country;
 
-    @JsonBackReference
     @ManyToOne()
     @JoinColumn(name = "company_id")
     private Company company;
@@ -58,6 +58,9 @@ public class Job {
     @JsonManagedReference
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Requirement> requirements;
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Assignment> assignments;
 
     @Column(name = "job_description")
     private String jobDescription;
@@ -72,7 +75,8 @@ public class Job {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
-    public Job(JobRequestDTO requestJob, Company company, List<Requirement> requirements) {
+    public Job(JobRequestDTO requestJob, Company company, List<Requirement> requirements,
+            List<Assignment> assignments) {
         this.mode = requestJob.mode();
         this.title = requestJob.title();
         this.country = requestJob.country();
@@ -81,5 +85,6 @@ public class Job {
         this.generalAssignments = requestJob.generalAssignments();
         this.company = company;
         this.requirements = requirements;
+        this.assignments = assignments;
     }
 }

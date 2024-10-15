@@ -44,7 +44,7 @@ public class Company {
     @Column(name = "large_image_path")
     private String largeImagePath;
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Job> jobVacancies;
 

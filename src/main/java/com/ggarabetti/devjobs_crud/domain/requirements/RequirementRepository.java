@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface RequirementRepository extends JpaRepository<Requirement, UUID> {
     List<Requirement> findAll();
 
-    Optional<List<Requirement>> findAllById(UUID id);
+    Optional<List<Requirement>> findAllByJobId(UUID id);
 }
