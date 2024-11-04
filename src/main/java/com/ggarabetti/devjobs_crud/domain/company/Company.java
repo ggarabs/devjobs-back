@@ -3,7 +3,6 @@ package com.ggarabetti.devjobs_crud.domain.company;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ggarabetti.devjobs_crud.domain.job.Job;
 
 import jakarta.persistence.CascadeType;

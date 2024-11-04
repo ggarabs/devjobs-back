@@ -5,7 +5,6 @@ import java.util.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ggarabetti.devjobs_crud.domain.assignment.Assignment;

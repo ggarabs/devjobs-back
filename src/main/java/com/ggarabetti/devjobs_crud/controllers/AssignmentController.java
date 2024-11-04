@@ -25,13 +25,13 @@ public class AssignmentController {
     private AssignmentService assignmentService;
 
     @GetMapping
-    public ResponseEntity getAllAssignments() {
+    public ResponseEntity<List<Assignment>> getAllAssignments() {
         List<Assignment> allAssignments = assignmentService.getAllAssignments();
         return ResponseEntity.ok(allAssignments);
     }
 
     @PostMapping
-    public ResponseEntity registerAssignment(@RequestBody @Valid AssignmentRequestDTO data) {
+    public ResponseEntity<Assignment> registerAssignment(@RequestBody @Valid AssignmentRequestDTO data) {
         Assignment assignment = assignmentService.registerAssignment(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(assignment);
     }

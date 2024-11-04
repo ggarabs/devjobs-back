@@ -32,14 +32,14 @@ public class JobController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping
-    public ResponseEntity getAllJobs() {
+    public ResponseEntity<List<Job>> getAllJobs() {
         List<Job> allJobs = jobService.getAllJobs();
         return ResponseEntity.ok(allJobs);
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
-    public ResponseEntity registerJob(@RequestBody @Valid JobRequestDTO data) {
+    public ResponseEntity<Job> registerJob(@RequestBody @Valid JobRequestDTO data) {
         Job job = jobService.registerJob(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(job);
     }
@@ -47,14 +47,14 @@ public class JobController {
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PutMapping()
     @Transactional
-    public ResponseEntity updateJob(@RequestBody @Valid JobRequestDTO data) {
+    public ResponseEntity<Job> updateJob(@RequestBody @Valid JobRequestDTO data) {
         var updatedJob = jobService.updateJob(data);
         return ResponseEntity.ok(updatedJob);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity removeJob(@PathVariable UUID id) {
+    public ResponseEntity<Job> removeJob(@PathVariable UUID id) {
         var removedJob = jobService.removeJob(id);
         return ResponseEntity.ok(removedJob);
     }

@@ -25,13 +25,13 @@ public class RequirementsController {
     private RequirementService requirementsService;
 
     @GetMapping
-    public ResponseEntity getAllRequirements() {
+    public ResponseEntity<List<Requirement>> getAllRequirements() {
         List<Requirement> allRequirements = requirementsService.getAllRequirements();
         return ResponseEntity.ok(allRequirements);
     }
 
     @PostMapping
-    public ResponseEntity registerRequirement(@RequestBody @Valid RequirementRequestDTO data) {
+    public ResponseEntity<Requirement> registerRequirement(@RequestBody @Valid RequirementRequestDTO data) {
         Requirement requirement = requirementsService.registerRequirement(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(requirement);
     }

@@ -25,13 +25,13 @@ public class CompanyController {
     private CompanyService companyService;
 
     @GetMapping
-    public ResponseEntity getAllCompanies() {
+    public ResponseEntity<List<Company>> getAllCompanies() {
         List<Company> allCompanies = companyService.getAllCompanies();
         return ResponseEntity.ok(allCompanies);
     }
 
     @PostMapping
-    public ResponseEntity registerCompany(@RequestBody @Valid CompanyRequestDTO data) {
+    public ResponseEntity<Company> registerCompany(@RequestBody @Valid CompanyRequestDTO data) {
         Company company = companyService.registerCompany(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(company);
     }
