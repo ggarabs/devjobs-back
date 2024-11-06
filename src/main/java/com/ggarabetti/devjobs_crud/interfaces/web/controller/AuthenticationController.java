@@ -4,10 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,12 +39,25 @@ public class AuthenticationController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody @Valid AuthenticationDTO data) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        try {
+            var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+            var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        return ResponseEntity.ok().build();
+            System.out.println("Authentication Success!");
+
+            return ResponseEntity.ok().body("Authentication Success!");
+        } catch (AuthenticationException err) {
+            System.out.println("Bad Credentials");
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bad Credentials");
+        } catch (Exception err) {
+            System.out.println("Internal error");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error. Try again");
+        }
     }
 
     @PostMapping("/register")
