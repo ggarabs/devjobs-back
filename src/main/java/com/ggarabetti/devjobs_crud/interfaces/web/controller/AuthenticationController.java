@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ggarabetti.devjobs_crud.application.dto.AuthenticationDTO;
+import com.ggarabetti.devjobs_crud.application.dto.LoginResponseDTO;
 import com.ggarabetti.devjobs_crud.application.dto.RegisterDTO;
 import com.ggarabetti.devjobs_crud.domain.model.user.Role;
 import com.ggarabetti.devjobs_crud.domain.model.user.User;
 import com.ggarabetti.devjobs_crud.domain.repository.RoleRepository;
 import com.ggarabetti.devjobs_crud.domain.repository.UserRepository;
+import com.ggarabetti.devjobs_crud.infrastructure.service.TokenService;
 
 import jakarta.validation.Valid;
 
@@ -39,16 +40,21 @@ public class AuthenticationController {
     @Autowired
     private RoleRepository roleRepository;
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @Autowired
+    private TokenService tokenService;
+
+    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid AuthenticationDTO data) {
+    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
         try {
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
             var auth = this.authenticationManager.authenticate(usernamePassword);
 
+            var token = tokenService.generateToken((User) auth.getPrincipal());
+
             System.out.println("Authentication Success!");
 
-            return ResponseEntity.ok().body("Authentication Success!");
+            return ResponseEntity.ok(new LoginResponseDTO(token));
         } catch (AuthenticationException err) {
             System.out.println("Bad Credentials");
 
