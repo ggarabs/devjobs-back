@@ -1,10 +1,18 @@
 package com.ggarabetti.devjobs_crud.interfaces.web.controller;
 
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ggarabetti.devjobs_crud.application.dto.AuthenticationDTO;
-import com.ggarabetti.devjobs_crud.application.dto.LoginResponseDTO;
 import com.ggarabetti.devjobs_crud.application.dto.RegisterDTO;
 import com.ggarabetti.devjobs_crud.domain.model.user.Role;
 import com.ggarabetti.devjobs_crud.domain.model.user.User;
@@ -25,6 +32,7 @@ import com.ggarabetti.devjobs_crud.domain.repository.RoleRepository;
 import com.ggarabetti.devjobs_crud.domain.repository.UserRepository;
 import com.ggarabetti.devjobs_crud.infrastructure.service.TokenService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @RestController
@@ -43,26 +51,29 @@ public class AuthenticationController {
     @Autowired
     private TokenService tokenService;
 
-    @CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
+    @CrossOrigin(origins = "http://localhost:5173/*", allowedHeaders = "*")
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
+    public ResponseEntity<?> login(@RequestBody @Valid AuthenticationDTO data, HttpServletResponse resp) {
         try {
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
             var auth = this.authenticationManager.authenticate(usernamePassword);
 
             var token = tokenService.generateToken((User) auth.getPrincipal());
 
-            System.out.println("Authentication Success!");
+            ResponseCookie httpOnlyCookie = ResponseCookie.from("token", token).httpOnly(true).secure(false)
+                    .sameSite("Strict").path("/")
+                    .maxAge(30 * 60)
+                    .build();
 
-            return ResponseEntity.ok(new LoginResponseDTO(token));
+            resp.setHeader("Set-Cookie", httpOnlyCookie.toString());
+
+            return ResponseEntity.ok(Map.of("message", "Authentication succesful"));
         } catch (AuthenticationException err) {
-            System.out.println("Bad Credentials");
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bad Credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "Unauthorized", "message", "Bad Credentials"));
         } catch (Exception err) {
-            System.out.println("Internal error");
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal error. Try again");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Internal Server Error", "message", "Try again later"));
         }
     }
 
