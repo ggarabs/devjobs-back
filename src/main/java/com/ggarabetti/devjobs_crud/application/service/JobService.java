@@ -8,14 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ggarabetti.devjobs_crud.application.dto.JobRequestDTO;
-import com.ggarabetti.devjobs_crud.domain.model.Assignment;
 import com.ggarabetti.devjobs_crud.domain.model.Company;
 import com.ggarabetti.devjobs_crud.domain.model.Job;
-import com.ggarabetti.devjobs_crud.domain.model.Requirement;
-import com.ggarabetti.devjobs_crud.domain.repository.AssignmentRepository;
 import com.ggarabetti.devjobs_crud.domain.repository.CompanyRepository;
 import com.ggarabetti.devjobs_crud.domain.repository.JobRepository;
-import com.ggarabetti.devjobs_crud.domain.repository.RequirementRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -28,25 +24,15 @@ public class JobService {
     @Autowired
     private CompanyRepository companyRepository;
 
-    @Autowired
-    private RequirementRepository requirementRepository;
-
-    @Autowired
-    private AssignmentRepository assignmentRepository;
-
     public List<Job> getAllJobs() {
         return jobRepository.findAll();
     }
 
     public Job registerJob(JobRequestDTO job) {
         Optional<Company> optionalCompany = companyRepository.findById(job.companyId());
-        Optional<List<Requirement>> optionalRequirements = requirementRepository.findAllByJobId(job.id());
-        Optional<List<Assignment>> optionalAssignments = assignmentRepository.findAllByJobId(job.id());
-        if (optionalCompany.isPresent() && optionalRequirements.isPresent()) {
+        if (optionalCompany.isPresent()) {
             Company company = optionalCompany.get();
-            List<Requirement> requirements = optionalRequirements.get();
-            List<Assignment> assignments = optionalAssignments.get();
-            Job newJob = new Job(job, company, requirements, assignments);
+            Job newJob = new Job(job, company);
             return jobRepository.save(newJob);
         }
         throw new EntityNotFoundException();

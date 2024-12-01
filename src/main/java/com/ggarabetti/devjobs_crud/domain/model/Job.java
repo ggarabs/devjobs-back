@@ -56,6 +56,7 @@ public class Job {
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Requirement> requirements;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> assignments;
 
@@ -83,5 +84,15 @@ public class Job {
         this.company = company;
         this.requirements = requirements;
         this.assignments = assignments;
+    }
+
+    public Job(JobRequestDTO requestJob, Company company) {
+        this.mode = requestJob.mode();
+        this.title = requestJob.title();
+        this.country = requestJob.country();
+        this.jobDescription = requestJob.jobDescription();
+        this.generalRequirements = requestJob.generalRequirements();
+        this.generalAssignments = requestJob.generalAssignments();
+        this.company = company;
     }
 }

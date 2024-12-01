@@ -32,6 +32,7 @@ public class CompanyController {
 
     @PostMapping
     public ResponseEntity<Company> registerCompany(@RequestBody @Valid CompanyRequestDTO data) {
+        System.out.println("register");
         Company company = companyService.registerCompany(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(company);
     }
