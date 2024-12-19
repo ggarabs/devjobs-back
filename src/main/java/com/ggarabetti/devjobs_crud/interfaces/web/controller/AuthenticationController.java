@@ -71,9 +71,11 @@ public class AuthenticationController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173/*", allowedHeaders = "*")
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterDTO data) {
-        if (this.userRepository.findByLogin(data.login()) != null)
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterDTO data) {
+
+        if (this.userRepository.findByLogin(data.username()) != null)
             return ResponseEntity.badRequest().build();
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
 
@@ -86,10 +88,10 @@ public class AuthenticationController {
             userRoles.add(currRole);
         }
 
-        User newUser = new User(data.login(), encryptedPassword, userRoles);
+        User newUser = new User(data.username(), encryptedPassword, userRoles);
 
         this.userRepository.save(newUser);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Map.of("message", "Registration succesful"));
     }
 }
